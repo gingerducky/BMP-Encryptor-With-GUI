@@ -4,8 +4,36 @@
 
 BmpImage24Bit::BmpImage24Bit(std::string pathToBmp) : filePath(pathToBmp) {
     fileStream.open(pathToBmp, std::ios::binary|std::ios::in|std::ios::out);
-
+    if (!filestr) {
+        cerr << "Something went wrong while trying to open the file!\n";
+        exit(1);
+    }
     /* What do I do if and object's constructor fails but I don't want to
     end the program? I think it's in chapter 24 of my book, so I'll
     wait until I get there before implementing this. */
+    fileStream.seekg(28, std::ios::beg); //Bytes per pixel
+    fileStream.read(reinterpret_cast<char *>(&bits), 2);
+
+    if (bits!=24) {
+        cerr << "File is not of RGB 24 bit type!\n";
+        exit(1);
+    }
+
+    fileStream.seekg(2, std::ios::beg);
+    fileStream.read(reinterpret_cast<char *>(&size), 4);
+    fileStream.seekg(10, std::ios::beg);
+    fileStream.read(reinterpret_cast<char *>(&offset), 4);
+    fileStream.seekg(18, std::ios::beg);
+    fileStream.read(reinterpret_cast<char *>(&width), 4);
+    fileStream.read(reinterpret_cast<char *>(&height), 4);
+    
+    byter_per_row = 3 * width;
+    if (byter_per_row % 4 != 0) byter_per_row = (byter_per_row / 4 + 1) + 1;
+    padding = byter_per_row - 3 * width;
+
+    fileStream.seekg(offset, ios::beg); //first pixel location setup
+}
+
+int32_t BmpImage24Bit::getWidth() {
+    return width;
 }
