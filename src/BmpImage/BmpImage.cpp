@@ -1,9 +1,9 @@
 #include "BmpImage.h"
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 
-BmpImage24Bit::BmpImage24Bit(std::string pathToBmp) : filePath(pathToBmp) {
+BmpImage24Bit::BmpImage24Bit(std::filesystem::path pathToBmp) : filePath(pathToBmp) {
     fileStream.open(pathToBmp, std::ios::binary|std::ios::in|std::ios::out);
     if (!fileStream) {
         std::cerr << "Something went wrong while trying to open the file!\n";
@@ -12,7 +12,7 @@ BmpImage24Bit::BmpImage24Bit(std::string pathToBmp) : filePath(pathToBmp) {
     /* What do I do if and object's constructor fails but I don't want to
     end the program? I think it's in chapter 24 of my book, so I'll
     wait until I get there before implementing this. */
-    fileStream.seekg(28, std::ios::beg); //Bytes per pixel
+    fileStream.seekg(28, std::ios::beg);
     fileStream.read(reinterpret_cast<char *>(&bits), 2);
 
     if (bits!=24) {
@@ -33,6 +33,10 @@ BmpImage24Bit::BmpImage24Bit(std::string pathToBmp) : filePath(pathToBmp) {
     padding = byter_per_row - 3 * width;
 
     fileStream.seekg(offset, std::ios::beg); //first pixel location setup
+}
+
+BmpImage24Bit::BmpImage24Bit(BmpImage24Bit&) {
+
 }
 
 int32_t BmpImage24Bit::getWidth() const {
@@ -59,7 +63,7 @@ int16_t BmpImage24Bit::getBits() const {
     return bits;
 }
 
-std::string BmpImage24Bit::getFilePath() const {
+std::filesystem::path BmpImage24Bit::getFilePath() const {
     return filePath;
 }
 

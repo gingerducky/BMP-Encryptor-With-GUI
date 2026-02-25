@@ -1,7 +1,7 @@
 #include <cstdint>
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 
 #pragma once
 
@@ -30,17 +30,18 @@ class BmpImage24Bit {
     int32_t width, height, offset, size, byter_per_row, padding;
     int16_t bits;
 
-    std::string filePath;
+    std::filesystem::path filePath;
 
     public:
-        BmpImage24Bit(std::string pathToBmp);
+        BmpImage24Bit(std::filesystem::path pathToBmp);
+        BmpImage24Bit(BmpImage24Bit&);
         int32_t getWidth() const;
         int32_t getHeight() const;
         int32_t getOffset() const;
         int32_t getBytesPerRow() const;
         int32_t getPadding() const;
         int16_t getBits() const;
-        std::string getFilePath() const;
+        std::filesystem::path getFilePath() const;
         Pixel getPixelAt(uint32_t x, uint32_t y);
         Pixel setPixelAt(uint32_t x, uint32_t y, Pixel pixelIn);
 };
