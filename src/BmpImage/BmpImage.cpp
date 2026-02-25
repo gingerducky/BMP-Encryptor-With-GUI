@@ -1,11 +1,12 @@
-#include <"BmpImage.h">
+#include "BmpImage.h"
 #include <string>
 #include <fstream>
+#include <iostream>
 
 BmpImage24Bit::BmpImage24Bit(std::string pathToBmp) : filePath(pathToBmp) {
     fileStream.open(pathToBmp, std::ios::binary|std::ios::in|std::ios::out);
-    if (!filestr) {
-        cerr << "Something went wrong while trying to open the file!\n";
+    if (!fileStream) {
+        std::cerr << "Something went wrong while trying to open the file!\n";
         exit(1);
     }
     /* What do I do if and object's constructor fails but I don't want to
@@ -15,7 +16,7 @@ BmpImage24Bit::BmpImage24Bit(std::string pathToBmp) : filePath(pathToBmp) {
     fileStream.read(reinterpret_cast<char *>(&bits), 2);
 
     if (bits!=24) {
-        cerr << "File is not of RGB 24 bit type!\n";
+        std::cerr << "File is not of RGB 24 bit type!\n";
         exit(1);
     }
 
@@ -31,9 +32,54 @@ BmpImage24Bit::BmpImage24Bit(std::string pathToBmp) : filePath(pathToBmp) {
     if (byter_per_row % 4 != 0) byter_per_row = (byter_per_row / 4 + 1) + 1;
     padding = byter_per_row - 3 * width;
 
-    fileStream.seekg(offset, ios::beg); //first pixel location setup
+    fileStream.seekg(offset, std::ios::beg); //first pixel location setup
 }
 
-int32_t BmpImage24Bit::getWidth() {
+int32_t BmpImage24Bit::getWidth() const {
     return width;
+}
+
+int32_t BmpImage24Bit::getHeight() const {
+    return height;
+}
+
+int32_t BmpImage24Bit::getOffset() const {
+    return offset;
+}
+
+int32_t BmpImage24Bit::getBytesPerRow() const {
+    return byter_per_row;
+}
+
+int32_t BmpImage24Bit::getPadding() const {
+    return padding;
+}
+
+int16_t BmpImage24Bit::getBits() const {
+    return bits;
+}
+
+std::string BmpImage24Bit::getFilePath() const {
+    return filePath;
+}
+
+Pixel BmpImage24Bit::getPixelAt(uint32_t x, uint32_t y) {
+    if (x > width-1 || y > height-1) {
+        std::cerr << "Out of bounds!";
+        exit(1);
+    }
+    fileStream.seekg(getOffset() + x * 3 + y * getBytesPerRow(), std::ios::beg);
+    fileStream.read(reinterpret_cast<char *>(&p), 3);
+    return p;
+}
+
+Pixel BmpImage24Bit::setPixelAt(uint32_t x, uint32_t y, Pixel pixelIn) {
+    if (x > width-1 || y > height-1) {
+        std::cerr << "Out of bounds!";
+        exit(1);
+    }
+    fileStream.seekp(getOffset() + x * 3 + y * getBytesPerRow(), std::ios::beg);
+    fileStream.write(reinterpret_cast<char *>(&pixelIn), 3);
+    return getPixelAt(x, y);
+
 }

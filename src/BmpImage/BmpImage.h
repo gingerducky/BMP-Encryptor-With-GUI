@@ -1,14 +1,27 @@
 #include <cstdint>
 #include <string>
 #include <fstream>
+#include <iostream>
 
 #pragma once
 
+#pragma pack(push, 1)
 struct Pixel {
     uint8_t blue;
     uint8_t green;
     uint8_t red;
+
+    void showVals() {
+        std::cout << "Red: " << (int)red << " Green: " << (int)green << " Blue: " << (int)blue << std::endl;
+    }
+
+    void setVals(uint8_t r, uint8_t g, uint8_t b) {
+        red = r;
+        green = g;
+        blue = b;
+    }
 };
+#pragma pack(pop)
 
 class BmpImage24Bit {
 
@@ -28,6 +41,6 @@ class BmpImage24Bit {
         int32_t getPadding() const;
         int16_t getBits() const;
         std::string getFilePath() const;
-        Pixel getPixelAt(uint32_t x, uint32_t y) const;
-        bool setPixelAt(uint32_t x, uint32_t y, Pixel pixelIn);
+        Pixel getPixelAt(uint32_t x, uint32_t y);
+        Pixel setPixelAt(uint32_t x, uint32_t y, Pixel pixelIn);
 };

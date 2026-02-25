@@ -39,3 +39,6 @@
 
 # debug information files
 *.dwo
+
+# Why was this not included by default?
+build/
