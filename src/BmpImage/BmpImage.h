@@ -25,16 +25,18 @@ struct Pixel {
 
 class BmpImage24Bit {
 
-    std::fstream fileStream;
     Pixel p;
     int32_t width, height, offset, size, byter_per_row, padding;
     int16_t bits;
 
     std::filesystem::path filePath;
 
+    void loadBMPData(std::filesystem::path pathToBmp);
+
     public:
         BmpImage24Bit(std::filesystem::path pathToBmp);
-        BmpImage24Bit(BmpImage24Bit&);
+        BmpImage24Bit(const BmpImage24Bit& other);
+        std::filesystem::path setFileName(std::string newName);
         int32_t getWidth() const;
         int32_t getHeight() const;
         int32_t getOffset() const;

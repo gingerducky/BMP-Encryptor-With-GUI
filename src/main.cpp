@@ -1,28 +1,39 @@
 #include "BmpImage/BmpImage.h"
+#include "Encryptor/Encryptor.h"
 #include <string>
 #include <iostream>
 
 int main(int argc, char *argv[]) {
     
-    if (argc != 2) {
+    if (argc < 3 || argc > 4) {
         std::cerr << "Wrong Amount of Arguments!\n";
         exit(1);
     }
     std::string inputPath;
     inputPath = argv[1];
     BmpImage24Bit myImg(inputPath);
-    Pixel mypixel;
-
-    std::cout << "Width: " << myImg.getWidth() << " Height: " << myImg.getHeight() << std::endl;
+    BmpImage24Bit myNewImg = myImg;
+    
+    if (argc == 4) {
+        std::cout << myNewImg.setFileName(argv[3]) << std::endl;
+    }
+        Pixel mypixel;
+    
+    Encryptor bmpEnc(Encryptor::ImageType::BMP24bit);
+    bmpEnc.resetSrand(std::atoi(argv[2]));
     mypixel = myImg.getPixelAt(0, 0);
+    std::cout << "Here!\n";
     mypixel.showVals();
+    std::cout<<myNewImg.getWidth() << ' ' << myNewImg.getHeight() << std::endl;
+    std::cout<<myImg.getWidth() << ' ' << myImg.getHeight() << std::endl;
 
-    mypixel.setVals(255, 255, 255);
     int i;
     int j;
-    for (i = 0; i < myImg.getHeight(); i++) {
-        for (j = 0; j < myImg.getWidth(); j++) {
-            myImg.setPixelAt(j, i, mypixel);
+    for (i = 0; i < myNewImg.getHeight(); i++) {
+        for (j = 0; j < myNewImg.getWidth(); j++) {
+            mypixel = myNewImg.getPixelAt(j, i);
+            mypixel = bmpEnc.pixelXOREncryption(mypixel);
+            myNewImg.setPixelAt(j, i, mypixel);
         }
     }
     std::cout << i << ' ' << j << std::endl;

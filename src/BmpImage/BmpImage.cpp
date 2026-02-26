@@ -1,9 +1,11 @@
 #include "BmpImage.h"
+#include <string>
 #include <fstream>
 #include <iostream>
 #include <filesystem>
 
-BmpImage24Bit::BmpImage24Bit(std::filesystem::path pathToBmp) : filePath(pathToBmp) {
+void BmpImage24Bit::loadBMPData(std::filesystem::path pathToBmp) {
+    std::fstream fileStream;
     fileStream.open(pathToBmp, std::ios::binary|std::ios::in|std::ios::out);
     if (!fileStream) {
         std::cerr << "Something went wrong while trying to open the file!\n";
@@ -35,8 +37,27 @@ BmpImage24Bit::BmpImage24Bit(std::filesystem::path pathToBmp) : filePath(pathToB
     fileStream.seekg(offset, std::ios::beg); //first pixel location setup
 }
 
-BmpImage24Bit::BmpImage24Bit(BmpImage24Bit&) {
+BmpImage24Bit::BmpImage24Bit(std::filesystem::path pathToBmp) : filePath(pathToBmp) {
+    BmpImage24Bit::loadBMPData(pathToBmp);
+}
 
+BmpImage24Bit::BmpImage24Bit(const BmpImage24Bit& other) {
+    std::filesystem::path directory = other.getFilePath().parent_path();
+    std::string stem = other.getFilePath().stem().string();
+    std::string extension = other.getFilePath().extension().string();
+
+    filePath = directory / (stem + "Copy" + extension);
+    
+    std::filesystem::copy_file(other.filePath, filePath, std::filesystem::copy_options::overwrite_existing);
+    loadBMPData(filePath);
+}
+
+std::filesystem::path BmpImage24Bit::setFileName(std::string newName) {
+    std::filesystem::path newPath = filePath.parent_path() / (newName + filePath.extension().string());
+
+    std::filesystem::rename(filePath, newPath);
+    filePath = newPath;
+    return filePath;
 }
 
 int32_t BmpImage24Bit::getWidth() const {
@@ -72,6 +93,8 @@ Pixel BmpImage24Bit::getPixelAt(uint32_t x, uint32_t y) {
         std::cerr << "Out of bounds!";
         exit(1);
     }
+    std::fstream fileStream;
+    fileStream.open(filePath, std::ios::binary|std::ios::in|std::ios::out);
     fileStream.seekg(getOffset() + x * 3 + y * getBytesPerRow(), std::ios::beg);
     fileStream.read(reinterpret_cast<char *>(&p), 3);
     return p;
@@ -82,6 +105,8 @@ Pixel BmpImage24Bit::setPixelAt(uint32_t x, uint32_t y, Pixel pixelIn) {
         std::cerr << "Out of bounds!";
         exit(1);
     }
+    std::fstream fileStream;
+    fileStream.open(filePath, std::ios::binary|std::ios::in|std::ios::out);
     fileStream.seekp(getOffset() + x * 3 + y * getBytesPerRow(), std::ios::beg);
     fileStream.write(reinterpret_cast<char *>(&pixelIn), 3);
     return getPixelAt(x, y);

@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(MyExecutable
     src/main.cpp
     src/BmpImage/BmpImage.cpp
+    src/Encryptor/Encryptor.cpp
 )
 
 target_include_directories(MyExecutable PRIVATE
