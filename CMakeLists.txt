@@ -5,6 +5,8 @@ project(MyProject)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(wxWidgets REQUIRED COMPONENTS core base)
+
 add_executable(MyExecutable
     src/main.cpp
     src/BmpImage/BmpImage.cpp
@@ -13,4 +15,9 @@ add_executable(MyExecutable
 
 target_include_directories(MyExecutable PRIVATE
     src
+)
+
+target_link_libraries(MyExecutable
+    wx::core
+    wx::base
 )
