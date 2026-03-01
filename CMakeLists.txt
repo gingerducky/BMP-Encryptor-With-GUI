@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(wxWidgets REQUIRED COMPONENTS core base)
+include(${wxWidgets_USE_FILE})
 
 add_executable(MyExecutable
     src/main.cpp
@@ -17,7 +18,4 @@ target_include_directories(MyExecutable PRIVATE
     src
 )
 
-target_link_libraries(MyExecutable
-    wx::core
-    wx::base
-)
+target_link_libraries(MyExecutable ${wxWidgets_LIBRARIES})
