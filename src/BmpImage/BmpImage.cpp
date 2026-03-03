@@ -5,7 +5,6 @@
 #include <filesystem>
 
 void BmpImage24Bit::loadBMPData(std::filesystem::path pathToBmp) {
-    std::fstream fileStream;
     fileStream.open(pathToBmp, std::ios::binary|std::ios::in|std::ios::out);
     if (!fileStream) {
         std::cerr << "Something went wrong while trying to open the file!\n";
@@ -93,8 +92,6 @@ Pixel BmpImage24Bit::getPixelAt(uint32_t x, uint32_t y) {
         std::cerr << "Out of bounds!";
         exit(1);
     }
-    std::fstream fileStream;
-    fileStream.open(filePath, std::ios::binary|std::ios::in|std::ios::out);
     fileStream.seekg(getOffset() + x * 3 + y * getBytesPerRow(), std::ios::beg);
     fileStream.read(reinterpret_cast<char *>(&p), 3);
     return p;
@@ -105,8 +102,6 @@ Pixel BmpImage24Bit::setPixelAt(uint32_t x, uint32_t y, Pixel pixelIn) {
         std::cerr << "Out of bounds!";
         exit(1);
     }
-    std::fstream fileStream;
-    fileStream.open(filePath, std::ios::binary|std::ios::in|std::ios::out);
     fileStream.seekp(getOffset() + x * 3 + y * getBytesPerRow(), std::ios::beg);
     fileStream.write(reinterpret_cast<char *>(&pixelIn), 3);
     return getPixelAt(x, y);

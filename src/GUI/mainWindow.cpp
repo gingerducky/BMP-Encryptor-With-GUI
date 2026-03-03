@@ -11,4 +11,3 @@ mainFrame::mainFrame() : wxFrame(nullptr, wxID_ANY, "EncryptorApp") {
     SetStatusText("Works!");
 }
 
-wxIMPLEMENT_APP(EncryptorApp);

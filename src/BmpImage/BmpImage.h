@@ -30,6 +30,7 @@ class BmpImage24Bit {
     int16_t bits;
 
     std::filesystem::path filePath;
+    std::fstream fileStream;
 
     void loadBMPData(std::filesystem::path pathToBmp);
 
