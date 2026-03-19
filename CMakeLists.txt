@@ -5,17 +5,12 @@ project(MyProject)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(wxWidgets REQUIRED COMPONENTS core base)
-include(${wxWidgets_USE_FILE})
-
-add_executable(MyExecutable
+add_executable(bmp_encryptor
     src/main.cpp
     src/BmpImage/BmpImage.cpp
     src/Encryptor/Encryptor.cpp
 )
 
-target_include_directories(MyExecutable PRIVATE
+target_include_directories(bmp_encryptor PRIVATE
     src
 )
-
-target_link_libraries(MyExecutable ${wxWidgets_LIBRARIES})
