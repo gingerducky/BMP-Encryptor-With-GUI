@@ -1,4 +1,4 @@
-# BMP-Encryptor-With-GUI
+# BMP-Encryptor-CMD-Tool
 
 A lightweight BMP image encryption command line tool written in C++.
 
